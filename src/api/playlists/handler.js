@@ -2,11 +2,11 @@ const ClientError = require("../../exceptions/ClientError");
 
 class PlaylistsHandler {
   constructor(playlistsService, validator) {
-    this.playlistsService = playlistsService;
-    this.validator = validator;
+    this._playlistsService = playlistsService;
+    this._validator = validator;
 
     this.postPlaylistHandler = this.postPlaylistHandler.bind(this);
-    this.getPlaylistsHandler = this.getPlaylistsHandler.bind(this);
+    this.getPlaylistHandler = this.getPlaylistHandler.bind(this);
     this.deletePlaylistHandler = this.deletePlaylistHandler.bind(this);
     this.postSongToPlaylistHandler = this.postSongToPlaylistHandler.bind(this);
     this.getSongsFromPlaylistHandler = this.getSongsFromPlaylistHandler.bind(this);
@@ -15,12 +15,12 @@ class PlaylistsHandler {
 
   async postPlaylistHandler(request, h) {
     try {
-      this.validator.validatePlaylistPayload(request.payload);
+      this._validator.validatePlaylistPayload(request.payload);
 
       const { name } = request.payload;
       const { id: owner } = request.auth.credentials;
 
-      const playlistId = await this.playlistsService.addPlaylists(name, owner);
+      const playlistId = await this._playlistsService.addPlaylists(name, owner);
 
       const response = h.response({
         status: "success",
@@ -52,9 +52,9 @@ class PlaylistsHandler {
     }
   }
 
-  async getPlaylistsHandler(request) {
+  async getPlaylistHandler(request) {
     const { id: owner } = request.auth.credentials;
-    const playlists = await this.playlistsService.getPlaylists(owner);
+    const playlists = await this._playlistsService.getPlaylists(owner);
 
     return {
       status: "success",
@@ -69,7 +69,7 @@ class PlaylistsHandler {
       const { id: owner } = request.auth.credentials;
       const { playlistId } = request.params;
 
-      await this.playlistsService.deletePlaylists(playlistId, owner);
+      await this._playlistsService.deletePlaylists(playlistId, owner);
 
       return {
         status: "success",
@@ -98,14 +98,14 @@ class PlaylistsHandler {
 
   async postSongToPlaylistHandler(request, h) {
     try {
-      this.validator.validateSongToPlaylistPayload(request.payload);
+      this._validator.validateSongToPlaylistPayload(request.payload);
 
       const { playlistId } = request.params;
       const { id: owner } = request.auth.credentials;
       const { songId } = request.payload;
 
-      await this.playlistsService.verifyPlaylistAccess(playlistId, owner);
-      await this.playlistsService.addSongToPlaylist(playlistId, songId);
+      await this._playlistsService.verifyPlaylistAccess(playlistId, owner);
+      await this._playlistsService.addSongToPlaylist(playlistId, songId);
 
       const response = h.response({
         status: "success",
@@ -140,8 +140,8 @@ class PlaylistsHandler {
       const { id: owner } = request.auth.credentials;
       const { playlistId } = request.params;
 
-      await this.playlistsService.verifyPlaylistAccess(playlistId, owner);
-      const songs = await this.playlistsService.getSongsFromPlaylist(playlistId);
+      await this._playlistsService.verifyPlaylistAccess(playlistId, owner);
+      const songs = await this._playlistsService.getSongsFromPlaylist(playlistId);
 
       return {
         status: "success",
@@ -172,14 +172,14 @@ class PlaylistsHandler {
 
   async deleteSongFromPlaylistHandler(request, h) {
     try {
-      this.validator.validateSongToPlaylistPayload(request.payload);
+      this._validator.validateSongToPlaylistPayload(request.payload);
 
       const { id: owner } = request.auth.credentials;
       const { playlistId } = request.params;
       const { songId } = request.payload;
 
-      await this.playlistsService.verifyPlaylistAccess(playlistId, owner);
-      await this.playlistsService.deleteSongsFromPlaylist(playlistId, songId);
+      await this._playlistsService.verifyPlaylistAccess(playlistId, owner);
+      await this._playlistsService.deleteSongsFromPlaylist(playlistId, songId);
 
       return {
         status: "success",
