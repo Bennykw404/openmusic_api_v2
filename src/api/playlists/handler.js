@@ -105,7 +105,7 @@ class PlaylistsHandler {
       const { songId } = request.payload;
 
       await this._playlistsService.verifyPlaylistAccess(playlistId, owner);
-      await this._playlistsService.addSongToPlaylist(playlistId, songId);
+      await this._playlistsService.addSongToPlaylists(playlistId, songId);
 
       const response = h.response({
         status: "success",
@@ -141,7 +141,7 @@ class PlaylistsHandler {
       const { playlistId } = request.params;
 
       await this._playlistsService.verifyPlaylistAccess(playlistId, owner);
-      const songs = await this._playlistsService.getSongsFromPlaylist(playlistId);
+      const songs = await this._playlistsService.getSongsFromPlaylists(playlistId);
 
       return {
         status: "success",
@@ -179,7 +179,7 @@ class PlaylistsHandler {
       const { songId } = request.payload;
 
       await this._playlistsService.verifyPlaylistAccess(playlistId, owner);
-      await this._playlistsService.deleteSongsFromPlaylist(playlistId, songId);
+      await this._playlistsService.deleteSongsFromPlaylists(playlistId, songId);
 
       return {
         status: "success",
