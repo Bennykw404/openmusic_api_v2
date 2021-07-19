@@ -14,8 +14,6 @@ exports.up = (pgm) => {
     },
   });
 
-  pgm.addConstraint("collaborations", "unique_playlist_id_and_user_id", "UNIQUE(playlist_id, user_id)");
-
   // memberikan constraint foreign key pada kolom paylists_id
   pgm.addConstraint("collaborations", "fk_playlists.playlist_id_playlists.id", "FOREIGN KEY(playlist_id) REFERENCES playlists(id) ON DELETE CASCADE");
 

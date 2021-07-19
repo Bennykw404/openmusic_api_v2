@@ -52,16 +52,36 @@ class PlaylistsHandler {
     }
   }
 
-  async getPlaylistHandler(request) {
-    const { id: owner } = request.auth.credentials;
-    const playlists = await this._playlistsService.getPlaylists(owner);
+  async getPlaylistHandler(request, h) {
+    try {
+      const { id: owner } = request.auth.credentials;
+      const playlists = await this._playlistsService.getPlaylists(owner);
 
-    return {
-      status: "success",
-      data: {
-        playlists,
-      },
-    };
+      return {
+        status: "success",
+        data: {
+          playlists,
+        },
+      };
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: "fail",
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
+      const response = h.response({
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
   }
 
   async deletePlaylistHandler(request, h) {
