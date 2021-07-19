@@ -70,7 +70,7 @@ class PlaylistsService {
 
   async getSongsFromPlaylists(playlistId) {
     const query = {
-      text: "SELECT songs.id, songs.title, songs.performer FROM songs INNER JOIN playlistsongs ON songs.id = playlistsongs.song_id WHERE playlist_id=$1",
+      text: "SELECT songs.id, songs.title, songs.performer FROM songs INNER JOIN playlistsongs ON songs.id = playlistsongs.song_id WHERE playlists_id=$1",
       values: [playlistId],
     };
 
@@ -81,7 +81,7 @@ class PlaylistsService {
 
   async deleteSongsFromPlaylists(playlistId, songId) {
     const query = {
-      text: "DELETE FROM playlistsongs WHERE playlist_id=$1 AND song_id=$2",
+      text: "DELETE FROM playlistsongs WHERE playlists_id=$1 AND song_id=$2",
       values: [playlistId, songId],
     };
 
